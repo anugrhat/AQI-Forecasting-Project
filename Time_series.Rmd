@@ -1,0 +1,193 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+---
+title: "Time Series Forecasting and Analysis of AQI Dataset"
+subtitle: "\n\n\n\\vspace{0.5cm}"
+author: 
+
+
+
+output:
+  pdf_document: 
+  html_document:
+    df_print: paged
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE}
+- \posttitle{\end{center}}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \usepackage{parskip}
+
+---
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\vspace{0.5cm}
+\begin{center}
+
+{\Large \textbf{Abstract}}
+\end{center}
+\vspace{1cm}
+
+
+\large
+
+
+
+
+The AQI is very important as it is significant as they are influenced by the different factors and forecasts. Air Quality Index (AQI) data can be forecast using time techniques. This project aims to model and analyze the AQI values given the volatility across the AQI values, to develop an accurate forecast model to provide meaningful insights to the general public. To achieve we perform the Seasonal Auto regressive Integrated Moving Average (SARIMA) as it treats time by combining the three key mechanics applied over non-seasonal (trend) and the seasonal periods. Another method that would be used is the Generalized Auto regressive Conditional Heteroskedasticity (GARCH), which is used especially when the data set is large and environmental data often has changing variability over time. The volatility would be where the variance changes over time. By incorporating both of these types of models, it is possible to be able to evaluate the analysis and understand the characteristics of the seasonality and account for the changing of variance over time. Together, these approaches highlight the importance of modeling both mean behavior and volatility dynamics in time series analysis. By combining them, we can better understand the seasonal changes occurring in the AQI data set. Overall, this study emphasizes the strengths of statistical time series models in capturing underlying patterns and forecasting future values using the SARIMA model and GARCH model to standardlize the votality in variances.
+
+
+
+\newpage
+# Introduction
+
+This project focuses on analyzing AQI values within a dataset to understand air pollution patterns, optimize forecasting tools, and apply the time series techniques learned throughout this course. Although real-time AQI values are not always available to the general public, they are widely used in environmental studies because of how significantly air quality impacts public health and well-being. As detailed by the U.S. Environmental Protection Agency, a higher Air Quality Index (AQI) value indicates a greater concentration of air pollution and, consequently, a higher level of health concern.
+
+I chose this dataset primarily because air quality is something I monitor daily using the weather application on my phone. Furthermore, during natural disasters, I find it essential to check the AQI before going outdoors. Given the recent surge in wildfires, verifying whether the air quality is safe has become increasingly vital. Due to the growing frequency of these wildfires, time series modeling is necessary to analyze historical trends and predict future environmental risks.
+
+In the article “Multivariate Timeseries Forecasting for Air Quality Prediction,” the author, Lucas See, decomposes an AQI dataset into seasonal and residual components to identify strong seasonal patterns. While they initially implement an ARIMA model, it fails to fully capture the complex behavior of the AQI data, prompting them to utilize a SARIMAX model instead. Incorporating this type of model allows for a more comprehensive analysis of these underlying relationships (See, 2024).
+
+Therefore, this project primarily focuses on applying SARIMA and GARCH models to better understand both the seasonal patterns and volatility dynamics present in AQI values. The analysis aims to generate reliable forecasts and extract insights into how air quality behaves over time, specifically regarding its seasonal fluctuations and changing variance. Through this project, I hope to successfully execute these models and achieve accurate forecasting results.
+
+
+
+\newpage
+
+# Data
+
+For this final project, I selected the Air Quality Index (AQI) dataset, which covers the period from July 21, 2022, to May 21, 2026. The raw dataset contains 25,113 observations across four variables: date, country, status, and AQI value. The data was collected by Azmine Toushik Wasi.The dataset follows a daily structure with a weekly cycle, meaning the observation pattern repeats every seven days, giving the series a frequency of seven. To make the data more suitable for analysis, I aggregated the observations into a daily time series dataset and only chose to analyze the AQI value in order to better understand the time series. After aggregation, the dataset contained approximately 188 observations. This created a more concise and manageable format that was better suited for applying time series analysis methods. 
+
+
+Given this dataset, it was obtained from the World Air Quality Index project (AIQCN), which is a volunteer-run based non-profit organization that provides free, real-time air pollution data for over 100 countries. By aggregating information from the global government monitoring stations and verified accurate data to promote the AIQ information to the public. 
+
+The primary reason I selected this dataset is that I live in the Bay Area, where temperatures peak during August and September, several months after our last seasonal rainfall. This intense heat frequently triggers the spread of wildfires. During these periods, I find myself checking the AQI often, knowing how hazardous poor air quality is to both the environment and human health. I also use the AirNow app which is to check the air quality index within the area. (US EPA 2026) 
+
+
+As wildfires have become increasingly frequent, they have drastically impacted the Air Quality Index. Wildfire smoke severely degrades air quality, making conditions unsafe for the general public and particularly dangerous for sensitive groups. By analyzing this dataset, I aim to apply the time series techniques learned in class to a meaningful, real-world application. Understanding these underlying seasonal patterns and trends is vital, as air quality directly impacts our daily lives.
+
+```{r out.width = "50%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/kaggle.png")
+```
+
+Link:
+https://www.kaggle.com/datasets/azminetoushikwasi/aqi-air-quality-index-scheduled-daily-update/data
+
+\newpage
+# Methodology
+
+
+For this project, the two time series models that are applied to analyze the AQI values dataset over time are the SARIMA and the GARCH models. Through this, it is possible to understand the importance of these models in understanding the trends for how they work. The SARIMA model is usually used to model short-term trends within the seasonality. While the GARCH model is used to check the statistical framework in order to predict volatility within the trends. 
+
+The SARIMA model, which is the Seasonal autoregressive integrated moving average, is a model that is used to forecast future data points based on the historical data and values. This is crucial as it helps to forecast time series data. The model methodology is denoted as SARIMA(p,d,q) x (P, D, Q)m, and it is broken down into two groups. The (p,d,q) are the non-seasonal components of the model, and the seasonal component of the SARIMA model is the parameters of (P, D, Q). Given the AQI data set, this can reflect how weather conditions and natural disasters create seasonality in patterns. The SARIMA model is important for analyzing AQI data because it accounts for seasonal patterns and temporal trends. This allows the model to examine how factors such as temperature, heat, weather disasters, and other environmental conditions may influence seasonal variations in AQI levels over time.
+
+The GARCH model, which stands for generalized autoregressive conditional heteroskedasticity, is a statistical model used to analyze the volatility of the AQI data values. In this project, the GARCH model is helpful to examine the relationships and fluctuations with high volatility and low volatility over time. Unlike other models that are focused on analyzing the mean of the data, the GARCH specifically analyzes the change of variance, which is very useful when analyzing the unstable behavior due to environmental conditions like wildfire, high levels of smoke, pollution events, and seasonal effects. The methodology for the GARCH model. The methodology involves first fitting a time series model, such as ARIMA or SARIMA, to remove trends and seasonality, and then applying the GARCH model to the residuals in order to analyze volatility patterns and improve forecasting accuracy.
+
+
+\newpage
+
+# Results
+
+## 1. SARIMA model
+
+```{r out.width = "60%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/Daily time_plot.png")
+```
+                                 
+                                 Figure 1: Appendix A1, A2
+                                  
+1. The first step is to plot the time series plot, by doing this with the ts() function and writing that the frequency is 7 to determine the stationarity. After doing this, the daily AQI time series plot suggests the presence of weekly seasonal patterns and differencing is needed to be done.
+
+```{r out.width = "50%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/adf_test_original.png")
+```
+                               
+                                 Figure 2: Appendix A3
+                          
+2. The second step would be taking the ADF test in order to determine whether differencing is needed for this time series plot. After taking the ADF test of the time series plot and checking the output of the test. The p-value is 0.1521, which is greater than the level of significance of 0.05. Indicating that differencing is needed for this time series plot.
+
+```{r out.width = "50%", echo = FALSE}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/adf_test_diff.png")
+knitr::include_graphics("/Users/anugrhatamang/Desktop/acf_plot_diff.png")
+```
+
+                                Figure 3: Appendix A4,A5
+                                
+3. The third step checking stationary and lag. The ADF test on the differenced series produced a p-value of 0.01, which is below the 0.05 significance threshold, meaning it passed the test. Next, the ACF/PACF plots of the differenced data was taken and acf plot displayed a large positive spike at lag 1, while the PACF plot showed a negative spike at lag 1. Based on these baseline patterns, an ARIMA(0,1,1), ARIMA(1,1,0), and ARIMA(0,0,1) are combination of parameters to explore.
+
+
+4. The fourth step includes taking the estimation of parameters. During the parameter estimation phase, these candidate models were evaluated and compared. Among the manual configurations, the ARIMA(1,1,0) model performed best, demonstrating stable results and the lowest Akaike Information Criterion (AIC) value within that group, and also having close normal residuals. 
+
+```{r out.width = "60%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/estimation.png")
+```
+
+                               Figure 4: Appendix A6
+
+5. The fifth step would be to find the diagnostics of the models. Residual diagnostics show that there is no major difference or pattern, qqplot suggests normality. The Ljung-Box test suggests that p-values are near the 0.05 level of significance. This suggests that the ARIMA(1,1,0) is the most effective model and the best choice for forecasting.
+
+```{r out.width = "50%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/auto.arima.png")
+```
+
+                              Figure 5: Appendix A7
+          
+          
+6. The sixth step is model selection.The auto.arima() function was used to identify the model that provided the best balance between goodness of fit and model complexity.Based on the lowest AIC value, the selected model was ARIMA(1,0,2)(0,0,1). It includes one autoregressive term, two moving-average terms, and one seasonal moving-average term with a seasonal period of 7 days.
+
+```{r out.width = "60%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/forecast.png")
+```
+
+
+                              Figure 6: Appendix A8
+
+Using the selected SARIMA(1,0,2)(0,0,1) model, a 12-step ahead forecast was generated for the AQI data. The forecast suggests a slight upward trend in AQI values over time, with widening prediction intervals indicating greater uncertainty further into the future. This 12-step forecast provides insight into how future AQI values may trend based on the patterns observed in the previous data values.
+
+## 2. GARCH model
+```{r out.width = "50%", echo = FALSE}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/acf_squared_residuals.png")
+knitr::include_graphics("/Users/anugrhatamang/Desktop/AIC_GARCH1.png")
+```
+                            
+                              Figure 7: Appendix A9,A10,A11
+                             
+ In order to identify the appropriate GARCH model, we need to examine the ACF/PACF plots of the residual squared plots before evaluating the model. Given the left plot above, the ARMA and GARCH models combined would be the best to check the volatility of the residuals. Such that testing the ARMA(1,2) + GARCH(1,1), ARMA(1,2) + GARCH(1,2), and ARMA(1,2) + GARCH(2,1) would be the best using the fGarch package. 
+
+After checking the summary of all these models, the best model would be the ARMA(1,2) + GARCH(1,1), where p-values are greater than the level of significance and indicate that there is no remaining volatility dependence existing, as in the plot above on the right side. Meaning that the model is identically distributed and is the best model compared to others. In addition,  the model that had the smallest AIC value was the ARMA(1,2) + GARCH(1,1) model. Indicating it is the model fit compared to other models. 
+
+```{r out.width = "100%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/plots.png")
+```
+
+                            Figure 8: Appendix A12
+
+ Therefore, the diagnostics plots above visually display that the ARMA(1,2) + GARCH(1,1) is the best fit model. By the stationarity through the standard normal residuals, and the ACF plot of residual being below the level of significance, indicating there is no large spikes at each lag, and the QQplot of the residuals along the normal distribution indicates that the residuals are normally distributed. Therefore, these diagnostics visually explain how the residuals are normally distributed and best fitted. 
+
+```{r out.width = "60%", echo = FALSE,fig.align = "center"}
+knitr::include_graphics("/Users/anugrhatamang/Desktop/future_garch.png")
+```
+  
+                            Figure 9: Appendix A13
+                            
+ The prediction confidence intervals shown above show the output of the ARMA and GARCH, which together form a collaborative forecasting model. The conditional mean equation captures the baseline stationary process of the series, while the conditional variance equation is for time-varying volatility. In addition, both of the components confirm that the ARMA-GARCH structure provides the best-fitting model for this time series.
+
+
+
+\newpage
+# Conclusion
+In conclusion, this project provided deep insights into the teof Air Quality Index (AQI) data and demonstrated how time series techniques can effectively model both structural trends and volatility. To begin the analysis, the dataset was aggregated to a daily frequency to establish a consistent time and to capture the underlying daily and weekly patterns necessary for modeling. There were two types of models that was used were the SARIMA and the GARCH. They were both selected to evluate the time series data. 
+
+To work with the SARIMA model, first, I had to perform the ADF test to evaluate the stationarity of the data. Given that the p-value of the test was originally 0.1521, greater than the level of significance (0.05), indicating that differencing was needed. After taking the difference and running the ADF test for the difference, the p-value outputted 0.1, which is lower than the level of significance (0.05), confirming the stationarity. The next step was to find the ACF and PACF plot of the difference to find the possible model parameters. After evaluating the plots, the possible parameters were ARIMA (0,1,1), ARIMA(1,1,0), and ARIMA(0,0,1). Then, checking the residual diagnostics and normality of the plots, ARIMA(1,1,0) performed the best overall. Before choosing the model, the auto.arima function was used, and the seasonal model of ARIMA(1,0,2)(0,0,1)[7] was selected. By performing the ARIMA/SARIMA models, I was able to find the best model and create a one-year-ahead forecast of how future AQI values are expected to trend based on the historical patterns. 
+
+
+The next model that was taken was the GARCH model. The first step that was taken was evaluating the residual squared plots of both ACF and PACF. Given those two plots, the best thing to do was to combine the ARMA  and the GARCH model together to be able to conclude with a full probability distribution and reliability within the forecasts and confidence intervals. Such that the parameters that were test were ARMA(1,2) + GARCH(1,1), ARMA(1,2) + GARCH(1,2), and ARMA(1,2) + GARCH(2,1). Comparing the summary tables across these variations revealed that the ARMA(1,2) + GARCH(1,1) specification was the most suitable choice, as it contained the smallest AIC value and was highly significant, with the coefficients indicating strong volatility. Such that taking the diagnostics plots, there was stationarity between the standard normal residuals plot, the ACF plot of residuals being less than the level of significance with no spike, and normality given the QQplot.Therefore, the ARIMA(1,2) + GARCH(1,1) performed the best overall. 
+
+Ultimately, combining the strengths of both the SARIMA/ARIMA and GARCH frameworks allowed for a clear evaluation of both the expected values and the forecasting confidence intervals. This project provided valuable insight into how the AQI dataset works and how each model performs. A logical next step to build upon these findings would be to implement a SARIMAX model in order to enhance forecasting precision and ensure that all tests and parameters are handled well.
+

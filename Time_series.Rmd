@@ -100,7 +100,6 @@ The GARCH model, which stands for generalized autoregressive conditional heteros
 knitr::include_graphics("/Users/anugrhatamang/Desktop/Daily time_plot.png")
 ```
                                  
-                                 Figure 1: Appendix A1, A2
                                   
 1. The first step is to plot the time series plot, by doing this with the ts() function and writing that the frequency is 7 to determine the stationarity. After doing this, the daily AQI time series plot suggests the presence of weekly seasonal patterns and differencing is needed to be done.
 
@@ -108,7 +107,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/Daily time_plot.png")
 knitr::include_graphics("/Users/anugrhatamang/Desktop/adf_test_original.png")
 ```
                                
-                                 Figure 2: Appendix A3
+                  
                           
 2. The second step would be taking the ADF test in order to determine whether differencing is needed for this time series plot. After taking the ADF test of the time series plot and checking the output of the test. The p-value is 0.1521, which is greater than the level of significance of 0.05. Indicating that differencing is needed for this time series plot.
 
@@ -117,7 +116,6 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/adf_test_diff.png")
 knitr::include_graphics("/Users/anugrhatamang/Desktop/acf_plot_diff.png")
 ```
 
-                                Figure 3: Appendix A4,A5
                                 
 3. The third step checking stationary and lag. The ADF test on the differenced series produced a p-value of 0.01, which is below the 0.05 significance threshold, meaning it passed the test. Next, the ACF/PACF plots of the differenced data was taken and acf plot displayed a large positive spike at lag 1, while the PACF plot showed a negative spike at lag 1. Based on these baseline patterns, an ARIMA(0,1,1), ARIMA(1,1,0), and ARIMA(0,0,1) are combination of parameters to explore.
 
@@ -128,7 +126,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/acf_plot_diff.png")
 knitr::include_graphics("/Users/anugrhatamang/Desktop/estimation.png")
 ```
 
-                               Figure 4: Appendix A6
+                        
 
 5. The fifth step would be to find the diagnostics of the models. Residual diagnostics show that there is no major difference or pattern, qqplot suggests normality. The Ljung-Box test suggests that p-values are near the 0.05 level of significance. This suggests that the ARIMA(1,1,0) is the most effective model and the best choice for forecasting.
 
@@ -136,7 +134,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/estimation.png")
 knitr::include_graphics("/Users/anugrhatamang/Desktop/auto.arima.png")
 ```
 
-                              Figure 5: Appendix A7
+                 
           
           
 6. The sixth step is model selection.The auto.arima() function was used to identify the model that provided the best balance between goodness of fit and model complexity.Based on the lowest AIC value, the selected model was ARIMA(1,0,2)(0,0,1). It includes one autoregressive term, two moving-average terms, and one seasonal moving-average term with a seasonal period of 7 days.
@@ -146,7 +144,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/forecast.png")
 ```
 
 
-                              Figure 6: Appendix A8
+                             
 
 Using the selected SARIMA(1,0,2)(0,0,1) model, a 12-step ahead forecast was generated for the AQI data. The forecast suggests a slight upward trend in AQI values over time, with widening prediction intervals indicating greater uncertainty further into the future. This 12-step forecast provides insight into how future AQI values may trend based on the patterns observed in the previous data values.
 
@@ -156,7 +154,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/acf_squared_residuals.png"
 knitr::include_graphics("/Users/anugrhatamang/Desktop/AIC_GARCH1.png")
 ```
                             
-                              Figure 7: Appendix A9,A10,A11
+                            
                              
  In order to identify the appropriate GARCH model, we need to examine the ACF/PACF plots of the residual squared plots before evaluating the model. Given the left plot above, the ARMA and GARCH models combined would be the best to check the volatility of the residuals. Such that testing the ARMA(1,2) + GARCH(1,1), ARMA(1,2) + GARCH(1,2), and ARMA(1,2) + GARCH(2,1) would be the best using the fGarch package. 
 
@@ -166,7 +164,7 @@ After checking the summary of all these models, the best model would be the ARMA
 knitr::include_graphics("/Users/anugrhatamang/Desktop/plots.png")
 ```
 
-                            Figure 8: Appendix A12
+                           
 
  Therefore, the diagnostics plots above visually display that the ARMA(1,2) + GARCH(1,1) is the best fit model. By the stationarity through the standard normal residuals, and the ACF plot of residual being below the level of significance, indicating there is no large spikes at each lag, and the QQplot of the residuals along the normal distribution indicates that the residuals are normally distributed. Therefore, these diagnostics visually explain how the residuals are normally distributed and best fitted. 
 
@@ -174,7 +172,7 @@ knitr::include_graphics("/Users/anugrhatamang/Desktop/plots.png")
 knitr::include_graphics("/Users/anugrhatamang/Desktop/future_garch.png")
 ```
   
-                            Figure 9: Appendix A13
+                      
                             
  The prediction confidence intervals shown above show the output of the ARMA and GARCH, which together form a collaborative forecasting model. The conditional mean equation captures the baseline stationary process of the series, while the conditional variance equation is for time-varying volatility. In addition, both of the components confirm that the ARMA-GARCH structure provides the best-fitting model for this time series.
 
